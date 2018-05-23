@@ -1,0 +1,28 @@
+{
+  "name": "gamepad-handler",
+  "version": "0.0.1",
+  "description": "Front end library that helps to handle gamepads",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kize/gamepad-handler.git"
+  },
+  "keywords": [
+    "gamepad",
+    "browser",
+    "8bitdo"
+  ],
+  "author": "kize",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Kize/gamepad-handler/issues"
+  },
+  "homepage": "https://github.com/Kize/gamepad-handler#readme",
+  "devDependencies": {
+    "tslint": "^5.10.0",
+    "typescript": "^2.8.3"
+  }
+}
