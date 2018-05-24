@@ -2,8 +2,8 @@ import { ButtonInformation, handleButton } from './btn-utils'
 
 export interface GamepadMapping {
   identifier: string
-  debug: boolean
   buttonsMapping: Array<ButtonInformation>
+  debug?: boolean
 }
 
 export type GamepadsMapping = Array<GamepadMapping>
