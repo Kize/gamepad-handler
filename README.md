@@ -8,7 +8,7 @@ This little library can be used to simplify the mapping of a gamepad in a web ap
 It's based on the [Gamepad API](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API), which is on the Working Draft status.
 It's supported only in recent browsers.
 
-The idea where is to give some mappings for devices connected, in order to link a button to either an action (`function`), or just a keyboard binding to throw an event.
+The idea is to give some mappings for connected devices, in order to link a button to either an action (`function`), or just a keyboard binding to throw an event.
 
 This library has no dependency.
 
