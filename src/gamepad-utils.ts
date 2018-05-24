@@ -1,45 +1,46 @@
-import { BtnUtils, ButtonInformation } from './btn-utils'
+import { ButtonInformation, handleButton } from './btn-utils'
 
 export interface GamepadMapping {
-	identifier: string
-	buttonsMapping: Array<ButtonInformation>
+  identifier: string
+  debug: boolean
+  buttonsMapping: Array<ButtonInformation>
 }
 
 export type GamepadsMapping = Array<GamepadMapping>
 
-export namespace GamePadUtils {
-	export function linkGamepadsToMappings(gamepads: Array<Gamepad>, gamepadsMapping: GamepadsMapping): Array<[Gamepad, GamepadMapping]> {
-		const gamepadsMapped: Array<[Gamepad, GamepadMapping]> = []
+export function linkGamepadsToMappings(gamepads: Array<Gamepad>, gamepadsMapping: GamepadsMapping): Array<[Gamepad, GamepadMapping]> {
+  const gamepadsMapped: Array<[Gamepad, GamepadMapping]> = []
 
-		gamepads.forEach(gamepad => {
-			gamepadsMapping.forEach(gamepadMapping => {
+  gamepads.forEach((gamepad: Gamepad) => {
+    gamepadsMapping.forEach((gamepadMapping: GamepadMapping) => {
 
-				if (gamepad.id.includes(gamepadMapping.identifier)) {
-					gamepadsMapped.push([gamepad, gamepadMapping])
-				}
-			})
-		})
+      if (gamepad.id.includes(gamepadMapping.identifier)) {
+        gamepadsMapped.push([gamepad, gamepadMapping])
+      }
+    })
+  })
 
-		return gamepadsMapped
-	}
+  return gamepadsMapped
+}
 
-	export function handleGamepad(gamepad: Gamepad, gamepadMapping: GamepadMapping): void {
-		if (gamepad.connected) {
-			handleGamePadButtons(gamepad, gamepadMapping)
-			handleGamePadAxis(gamepad, gamepadMapping)
-		} else {
-			console.warn('Game pad disconnected :/')
-		}
-	}
+export function handleGamepad(gamepad: Gamepad, gamepadMapping: GamepadMapping): void {
+  if (gamepad.connected) {
+    handleGamePadButtons(gamepad, gamepadMapping)
+    handleGamePadAxis(gamepad, gamepadMapping)
+  } else {
+    console.warn('Game pad disconnected :/', gamepad)
+  }
+}
 
-	function handleGamePadButtons(gamepad: Gamepad, gamepadMapping: GamepadMapping): void {
-		gamepad.buttons.forEach((button: GamepadButton, index: number) => {
-			const btnMapped = gamepadMapping.buttonsMapping[index]
-			BtnUtils.handleButton(button, btnMapped)
-		})
-	}
+function handleGamePadButtons(gamepad: Gamepad, gamepadMapping: GamepadMapping): void {
+  gamepad.buttons.forEach((button: GamepadButton, index: number) => {
+    const btnMapped = gamepadMapping.buttonsMapping.find((btnInfo: ButtonInformation) => btnInfo.mappingIndex === index)
+    if (btnMapped !== undefined) {
+      handleButton(button, btnMapped, gamepadMapping.debug)
+    }
+  })
+}
 
-	function handleGamePadAxis(gamepad: Gamepad, gamepadMapping: GamepadMapping): void {
-		console.log('TODO')
-	}
+function handleGamePadAxis(gamepad: Gamepad, gamepadMapping: GamepadMapping): void {
+  // console.warn('TODO')
 }

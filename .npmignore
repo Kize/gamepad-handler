@@ -1,2 +1,5 @@
 /.idea/
 /node_modules/
+/src/
+/tslint.json
+/tsconfig.json
