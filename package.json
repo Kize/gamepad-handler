@@ -1,6 +1,6 @@
 {
   "name": "gamepad-handler",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "description": "Front end library that helps to handle gamepads",
   "main": "dist/gamepad-handler.js",
   "scripts": {
