@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "Front end library that helps to handle gamepads",
   "main": "dist/gamepad-handler.js",
+  "types": "dist/gamepad-handler.d.ts",
   "scripts": {
     "lint": "tslint src/**/*.ts",
-    "build": "npm run lint && tsc"
+    "build": "rimraf dist && npm run lint && tsc --declaration"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,7 @@
   "homepage": "https://github.com/Kize/gamepad-handler#readme",
   "devDependencies": {
     "tslint": "^5.10.0",
-    "typescript": "^2.8.3"
+    "typescript": "^2.8.3",
+    "rimraf": "^2.6.2"
   }
 }

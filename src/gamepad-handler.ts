@@ -1,8 +1,11 @@
-import { ButtonInformation } from './btn-utils'
-import { GamepadMapping, GamepadsMapping, handleGamepad, linkGamepadsToMappings } from './gamepad-utils'
+import { AxisInformation } from './axe-utils'
+import { ButtonInformation } from './button-utils'
+import { GamepadMapping, GamepadOptions, GamepadsMapping, handleGamepad, linkGamepadsToMappings } from './gamepad-utils'
 
 const KEYBOARD_BUTTONS_TIME_LOOP = 50
 const DEFAULT_ACTION_THROTTLE = 500
+const DEFAULT_MIN_THRESHOLD = -0.3
+const DEFAULT_MAX_THRESHOLD = 0.3
 
 export enum GamePadHandlerState {
   OFF,
@@ -15,18 +18,29 @@ export class GamePadHandler {
   public readonly window: Window
   private state: GamePadHandlerState = GamePadHandlerState.OFF
 
-  constructor(public gamepadsMapping: GamepadsMapping,
-              public readonly keyboardButtonsTimeLoop: number = KEYBOARD_BUTTONS_TIME_LOOP,
-              public readonly defaultActionThrottle: number = DEFAULT_ACTION_THROTTLE,
-              _window: Window = window) {
+  constructor(public gamepadsMapping: GamepadsMapping, public readonly options: GamepadOptions = {}, _window: Window = window) {
     this.window = _window
+
+    this.options.keyboardButtonsTimeLoop = this.options.keyboardButtonsTimeLoop || KEYBOARD_BUTTONS_TIME_LOOP
+    this.options.defaultActionThrottle = this.options.defaultActionThrottle || DEFAULT_ACTION_THROTTLE
+    this.options.defaultMinThreshold = this.options.defaultMinThreshold || DEFAULT_MIN_THRESHOLD
+    this.options.defaultMaxThreshold = this.options.defaultMaxThreshold || DEFAULT_MAX_THRESHOLD
   }
 
   public start(): void {
     this.gamepadsMapping.forEach((gp: GamepadMapping) => {
       gp.buttonsMapping.forEach((btn: ButtonInformation) => {
         btn.canExecuteAction = true
-        btn.delay = btn.delay || this.defaultActionThrottle
+        btn.delay = btn.delay || this.options.defaultActionThrottle
+      })
+
+      gp.axesMapping.forEach((axis: AxisInformation) => {
+        axis.canExecuteAction1 = true
+        axis.canExecuteAction2 = true
+        axis.delay = axis.delay || this.options.defaultActionThrottle
+
+        axis.maxThreshold = axis.maxThreshold || this.options.defaultMinThreshold
+        axis.minThreshold = axis.maxThreshold || this.options.defaultMaxThreshold
       })
     })
 
@@ -53,13 +67,19 @@ export class GamePadHandler {
             }
           }
 
+          if (gamepads.length === 0) {
+            this.state = GamePadHandlerState.OFF
+            return
+          }
+
           const gamepadsMapped = linkGamepadsToMappings(gamepads, this.gamepadsMapping)
 
           gamepadsMapped.forEach((gamepadMapped: [Gamepad, GamepadMapping]) => {
             const [gp, gpMapping] = gamepadMapped
-            handleGamepad(gp, gpMapping)
+            handleGamepad(gp, gpMapping, this.window)
           })
-        }, this.keyboardButtonsTimeLoop)
+        }, this.options.keyboardButtonsTimeLoop)
+
       }
     })
   }

@@ -18,7 +18,8 @@ This library has no dependency.
 npm i gamepad-handler
 ```  
 
-> Typings for TypeScript apps will be coming soon.
+> Typings for TypeScript apps are declared within the library.
+If you want to use directly the TypeScript version, import everything you need from `gamepad-handler/src`.
 
 Imports :
 
@@ -110,7 +111,7 @@ Every contribution is welcomed :)
 
 ## Roadmap
 
-- [ ] Typings for TypeScript apps.
+- [X] Typings for TypeScript apps. (packaged within the library)
 - [ ] Replace the `setInterval` method to listen to gamepads buttons. [Web Worker](https://developer.mozilla.org/en-US/docs/Web/API/Worker) might be a better way to handle that.
 - [ ] Handle axis mapping
 - [ ] Provide an API to easily allow the final user to define/redefine the mapping
