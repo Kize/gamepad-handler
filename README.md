@@ -1,6 +1,6 @@
 # Game Pad Handler
 
-Version 1.0.0 released.
+Version 1.1.0 released.
 
 ## Description
 
@@ -24,7 +24,7 @@ If you want to use directly the TypeScript version, import everything you need f
 Imports :
 
 ```javascript 1.6
-  import { GamePadHandler } from 'gamepad-handler'
+import { GamePadHandler } from 'gamepad-handler'
 ```
 
 
@@ -34,42 +34,41 @@ One you have imported the GamePadHandler constructor, you have to give it some p
 
 Example :
 
-```javascript 1.6
-      const buttonsMapping = [
-        {
-          mappingIndex: 0,
-          btnInfo: 'a',
-          throwKeyEvent: false,
-          action: this.nextStep
-        },
-        {
-          mappingIndex: 4,
-          btnInfo: 'y',
-          throwKeyEvent: false,
-          action: this.previousStep,
-          delay: 2000
-        },
-        {
-          mappingIndex: 6,
-          btnInfo: 'L1',
-          throwKeyEvent: true,
-          key: 'ArrowLeft'
-        },
-        {
-          mappingIndex: 7,
-          btnInfo: 'R1',
-          throwKeyEvent: true,
-          key: 'ArrowRight'
-        }
-      ]
-      const eightbitdoGamepad = {
-        identifier: '8Bitdo',
-        debug: false,
-        buttonsMapping,
-      }
-      const gamepagHandler = new GamePadHandler([eightbitdoGamepad])
-
-      gamepagHandler.start()
+```javascript 1.8
+const buttonsMapping = [
+    {
+      mappingIndex: 0,
+      btnInfo: 'a',
+      throwKeyEvent: false,
+      action: this.nextStep
+    },
+    {
+      mappingIndex: 4,
+      btnInfo: 'y',
+      throwKeyEvent: false,
+      action: this.previousStep,
+      delay: 2000
+    },
+    {
+      mappingIndex: 6,
+      btnInfo: 'L1',
+      throwKeyEvent: true,
+      key: 'ArrowLeft'
+    },
+    {
+      mappingIndex: 7,
+      btnInfo: 'R1',
+      throwKeyEvent: true,
+      key: 'ArrowRight'
+    }
+    ]
+    const eightbitdoGamepad = {
+    identifier: '8Bitdo',
+    debug: false,
+    buttonsMapping,
+    }
+const gamepadHandler = new GamePadHandler([eightbitdoGamepad])
+gamepadHandler.start()
 ```
 
 In this example, I'm defining a binding for [a 8Bitdo gamepad](http://www.8bitdo.com/n30pro-f30pro/), to bind buttons **A**, **Y**, **L1**, **R1**.
@@ -89,6 +88,7 @@ The gamePad Handler constructor takes 4 parameters, one is mandatory:
 A GamePad Mapping defines how to bind a type of gamepad. It must be an object with 3 properties, 1 optional:
 - `identifier`: The is used to match the type of gamepad with the mapping defined. Each gamepad has a long description, but you can just provide a `string` which is included in the description of the gamepad.
 - `buttonsMapping`: An array of **ButtonInformation**
+- `axisMapping`: An array of **AxisInformation**
 - `debug`: a boolean in order to have some logs. This can be useful to test your mapping. By default: false
 
 
@@ -104,14 +104,77 @@ Properties :
 - `delay` : The number of milliseconds to throttle the action called. See **defaultActionThrottle** property of the GamePadHandler.
 
 
-## Contribution
+### AxisInformation
+Like the `ButtonInforation`, this described the mapping of an axis. 
+An axis is a value between -1 and 1, describing the direction and the intensity.
+A joystick is composed of 2 axes, to handle every direction.
 
+This handler has been built to handle 2 behaviors per axis, just like buttons.
+The first behavior (`key1` or `action1`) is triggered when the value of the axis is positive; the second one when the value is negative.
+In order to avoid fake calls due to the high sensibility of joysticks, you can provide per axe a `negativeThreshold` and a `positiveThreshold`.
+Those values will help you define deadzones. 
+
+**Example of thresholds**: 
+If an axis has a `negativeThreshold` defined to `-0.5`, the second behavior selected will be triggered only if the axisValue is between [-1;-0.5[
+
+**Example of axis Mapping**:
+
+```javascript 1.8
+const axesMapping = [
+    {
+      mappingIndex: 0,
+      axeInfo: 'Left stick 🢀🢂',
+      throwKeyEvent: true,
+      key1: 'a',
+      key2: 'z'
+    },
+    {
+      mappingIndex: 1,
+      axeInfo: 'Left stick 🢁🢃',
+      throwKeyEvent: false,
+      action1: () => {
+        this.nextStep()
+      },
+      action2: () => {
+        this.previousStep()
+      }
+    }
+]
+
+gamepadHandler.axesMapping = axesMapping
+```
+
+
+## Contribution
 This library is developped in TypeScript, please respect the tslint provided.
 Every contribution is welcomed :)
+
+## Changelog
+
+### 1.1.0
+
+- Handle axes
+  - 2 mappings per axis
+  - Same behaviors as buttons
+- Rename variables
+- Add an option parameter to the GamePad Handler, to avoid to pass a list of arguments.
+
+
+### 1.0.0
+
+- Handle multiple gamepads
+- Handle multiple gamepads mappings
+- Handle buttons mappings with 2 behaviors
+  - Key: throw keyboard events to simulate a key pressed.
+  - Action: bind the button to a function.
+
+### 0.0.1
+
+- Initial release, to test if the package was corecctly released.
 
 ## Roadmap
 
 - [X] Typings for TypeScript apps. (packaged within the library)
 - [ ] Replace the `setInterval` method to listen to gamepads buttons. [Web Worker](https://developer.mozilla.org/en-US/docs/Web/API/Worker) might be a better way to handle that.
-- [ ] Handle axis mapping
+- [X] Handle axis mapping
 - [ ] Provide an API to easily allow the final user to define/redefine the mapping
