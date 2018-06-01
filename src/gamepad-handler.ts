@@ -23,8 +23,8 @@ export class GamePadHandler {
 
     this.options.keyboardButtonsTimeLoop = this.options.keyboardButtonsTimeLoop || KEYBOARD_BUTTONS_TIME_LOOP
     this.options.defaultActionThrottle = this.options.defaultActionThrottle || DEFAULT_ACTION_THROTTLE
-    this.options.defaultMinThreshold = this.options.defaultMinThreshold || DEFAULT_MIN_THRESHOLD
-    this.options.defaultMaxThreshold = this.options.defaultMaxThreshold || DEFAULT_MAX_THRESHOLD
+    this.options.defaultNegativeThreshold = this.options.defaultNegativeThreshold || DEFAULT_MIN_THRESHOLD
+    this.options.defaultPositiveThreshold = this.options.defaultPositiveThreshold || DEFAULT_MAX_THRESHOLD
   }
 
   public start(): void {
@@ -39,8 +39,8 @@ export class GamePadHandler {
         axis.canExecuteAction2 = true
         axis.delay = axis.delay || this.options.defaultActionThrottle
 
-        axis.maxThreshold = axis.maxThreshold || this.options.defaultMinThreshold
-        axis.minThreshold = axis.maxThreshold || this.options.defaultMaxThreshold
+        axis.positiveThreshold = axis.positiveThreshold || this.options.defaultNegativeThreshold
+        axis.negativeThreshold = axis.positiveThreshold || this.options.defaultPositiveThreshold
       })
     })
 

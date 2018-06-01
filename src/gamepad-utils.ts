@@ -13,8 +13,8 @@ export interface GamepadOptions {
   keyboardButtonsTimeLoop?: number
   defaultActionThrottle?: number
 
-  defaultMinThreshold?: number
-  defaultMaxThreshold?: number
+  defaultNegativeThreshold?: number
+  defaultPositiveThreshold?: number
 }
 
 export type GamepadsMapping = Array<GamepadMapping>

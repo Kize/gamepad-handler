@@ -4,8 +4,8 @@ export interface AxisInformation {
   mappingIndex: number
   axeInfo: string
   throwKeyEvent: boolean
-  minThreshold?: number
-  maxThreshold?: number
+  negativeThreshold?: number
+  positiveThreshold?: number
   delay?: number
 
   key1?: string
@@ -23,16 +23,16 @@ export interface AxisInformation {
 }
 
 export function handleAxis(axisValue: number, axisIndex: number, axisInformation: AxisInformation, window: Window, debug: boolean = false) {
-  if (!isNil(axisInformation.minThreshold)
+  if (!isNil(axisInformation.negativeThreshold)
     && axisValue < 0
-    && axisValue > axisInformation.minThreshold) {
+    && axisValue > axisInformation.negativeThreshold) {
 
     axisValue = 0
   }
 
-  if (!isNil(axisInformation.maxThreshold)
+  if (!isNil(axisInformation.positiveThreshold)
     && axisValue > 0
-    && axisValue < axisInformation.maxThreshold) {
+    && axisValue < axisInformation.positiveThreshold) {
 
     axisValue = 0
   }
