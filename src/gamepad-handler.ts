@@ -1,11 +1,12 @@
 import { AxisInformation } from './axe-utils'
 import { ButtonInformation } from './button-utils'
 import { GamepadMapping, GamepadOptions, GamepadsMapping, handleGamepad, linkGamepadsToMappings } from './gamepad-utils'
+import { isNil } from './utils'
 
 const KEYBOARD_BUTTONS_TIME_LOOP = 50
 const DEFAULT_ACTION_THROTTLE = 500
-const DEFAULT_MIN_THRESHOLD = -0.3
-const DEFAULT_MAX_THRESHOLD = 0.3
+const DEFAULT_NEGATIVE_THRESHOLD = -0.3
+const DEFAULT_POSITIVE_THRESHOLD = 0.3
 
 export enum GamePadHandlerState {
   OFF,
@@ -23,8 +24,20 @@ export class GamePadHandler {
 
     this.options.keyboardButtonsTimeLoop = this.options.keyboardButtonsTimeLoop || KEYBOARD_BUTTONS_TIME_LOOP
     this.options.defaultActionThrottle = this.options.defaultActionThrottle || DEFAULT_ACTION_THROTTLE
-    this.options.defaultNegativeThreshold = this.options.defaultNegativeThreshold || DEFAULT_MIN_THRESHOLD
-    this.options.defaultPositiveThreshold = this.options.defaultPositiveThreshold || DEFAULT_MAX_THRESHOLD
+
+    if (this.options.defaultNegativeThreshold === undefined
+      || this.options.defaultNegativeThreshold < -1
+      || this.options.defaultNegativeThreshold > 0) {
+
+      this.options.defaultNegativeThreshold = DEFAULT_NEGATIVE_THRESHOLD
+    }
+
+    if (this.options.defaultPositiveThreshold === undefined
+      || this.options.defaultPositiveThreshold > 1
+      || this.options.defaultPositiveThreshold < 0) {
+
+      this.options.defaultPositiveThreshold = DEFAULT_POSITIVE_THRESHOLD
+    }
   }
 
   public start(): void {
@@ -40,7 +53,7 @@ export class GamePadHandler {
         axis.delay = axis.delay || this.options.defaultActionThrottle
 
         axis.positiveThreshold = axis.positiveThreshold || this.options.defaultNegativeThreshold
-        axis.negativeThreshold = axis.positiveThreshold || this.options.defaultPositiveThreshold
+        axis.negativeThreshold = axis.negativeThreshold || this.options.defaultPositiveThreshold
       })
     })
 
@@ -58,11 +71,11 @@ export class GamePadHandler {
 
         // Infinite loop to listen to the state of the game pads
         this.window.setInterval(() => {
-          const gamepadList: any = this.window.navigator.getGamepads()
+          const gamepadList = this.window.navigator.getGamepads()
           const gamepads: Array<Gamepad> = []
 
           for (const gp of gamepadList) {
-            if (gp !== null && gp !== undefined) {
+            if (!isNil(gp)) {
               gamepads.push(gp)
             }
           }
