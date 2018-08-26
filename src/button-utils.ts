@@ -1,13 +1,32 @@
 export interface ButtonInformation {
   mappingIndex: number
   btnInfo: string
-  throwKeyEvent: boolean
-  key?: string
-  canExecuteAction?: boolean
-  pressed?: boolean
-  delay?: number
+  mode: ButtonModes
 
+  // Keyboard event params
+  key?: string
+  pressed?: boolean
+
+  // Action params
+  delay?: number
+  canExecuteAction?: boolean
+
+  // Double actions params
+  previousState?: boolean
+
+  // Action method
   action?(): void
+
+  // Double actions methods
+  keydownAction?(): void
+
+  keyupAction?(): void
+}
+
+export enum ButtonModes {
+  KEYBOARD_EVENT = 'KEYBOARD_EVENT',
+  ACTION = 'ACTION',
+  DOUBLE_ACTION = 'DOUBLE_ACTION',
 }
 
 export function handleButton(button: GamepadButton, buttonInformation: ButtonInformation, window: Window, debug: boolean = false) {
@@ -15,10 +34,18 @@ export function handleButton(button: GamepadButton, buttonInformation: ButtonInf
     console.warn('You pressed the button mapped to :', buttonInformation)
   }
 
-  if (buttonInformation.throwKeyEvent) {
-    button.pressed ? triggerKey(buttonInformation, window) : triggerKeyEnd(buttonInformation, window)
-  } else if (button.pressed) {
-    execAction(buttonInformation)
+  switch (buttonInformation.mode) {
+    case ButtonModes.KEYBOARD_EVENT:
+      button.pressed ? triggerKey(buttonInformation, window) : triggerKeyEnd(buttonInformation, window)
+      break
+    case ButtonModes.ACTION:
+      if (button.pressed) {
+        execAction(buttonInformation)
+      }
+      break
+    case ButtonModes.DOUBLE_ACTION:
+      handleDoubleAction(buttonInformation, button.pressed)
+      break
   }
 }
 
@@ -51,4 +78,22 @@ function execAction(btnInfo: ButtonInformation) {
   setTimeout(() => {
     btnInfo.canExecuteAction = true
   }, btnInfo.delay)
+}
+
+function handleDoubleAction(btnInfo: ButtonInformation, currentState: boolean) {
+  if (!btnInfo.keydownAction || !btnInfo.keyupAction) {
+    throw Error('In double actions mode, please define `keydownAction` and `keyupAction`')
+  }
+
+  if (currentState === btnInfo.previousState) {
+    return
+  }
+
+  if (currentState) {
+    btnInfo.keydownAction()
+  } else {
+    btnInfo.keyupAction()
+  }
+
+  btnInfo.previousState = currentState
 }

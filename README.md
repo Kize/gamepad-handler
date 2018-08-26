@@ -99,9 +99,10 @@ Properties :
 - `mappingIndex` : a number, used to retrieve a button of a gamepad. (The gamepad API provides an Array of buttons, this parameter is the value of the index of the button to map, you have to find out which index is linked to the **A** button of your gamepad)
 - `btnInfo`: A string, useless to the library. 
 It's just here to help you to define which button is associated to the **mappingIndex** property.
-- `throwKeyEvent` : A boolean. This flag lets you decide the behavior you want for the mapped button. 
-If `true`, when the button is pressed, the GamePadHandler will dispatch a KeyboardEvent with the `key` property provided. 
-If `false`, the GamePadHandler will call the `action` property given.
+- `mode` : a string (value of an enum). This flag lets you decide the behavior you want for the mapped button. 
+  - If `'KEYBOARD_EVENT'`, when the button is pressed, the GamePadHandler will dispatch a KeyboardEvent with the `key` property provided. 
+  - If `'ACTION'`, the GamePadHandler will call the `action` property given.
+  - If `'DOUBLE_ACTION'`, the GamePadHandler will call the `keydownAction` property **one time** on keydown, then it will call the `keyupAction` **one time**, when the button is released.
 - `key` : a string defining which KeyboardEvent you want to dispatch.
 - `action` : A function to call when the button is pressed.
 - `delay` : The number of milliseconds to throttle the action called. 

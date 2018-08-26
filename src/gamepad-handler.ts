@@ -45,6 +45,7 @@ export class GamePadHandler {
       gp.buttonsMapping.forEach((btn: ButtonInformation) => {
         btn.canExecuteAction = true
         btn.delay = btn.delay || this.options.defaultActionThrottle
+        btn.previousState = false
       })
 
       gp.axesMapping.forEach((axis: AxisInformation) => {
