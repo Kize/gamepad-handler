@@ -1,6 +1,6 @@
 # Game Pad Handler
 
-Version 1.1.0 released.
+Version 2.0.0 released.
 
 ## Description
 
